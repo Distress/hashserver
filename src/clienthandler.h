@@ -5,6 +5,7 @@
 
 #include <QCryptographicHash>
 #include <QTcpSocket>
+#include <QTimer>
 
 class ClientHandler : public QObject
 {
@@ -22,12 +23,15 @@ signals:
 private:
     void writeLine(const QByteArray& line);
 
-    QTcpSocket m_socket;
     QCryptographicHash m_hash;
+    QTcpSocket m_socket;
+    QTimer m_sessionTimer;
 
 private slots:
     void onSocketError(QAbstractSocket::SocketError onSocketError);
     void onSocketReadyRead();
+
+    void onTimeout();
 };
 
 #endif // CLIENTHANDLER_H

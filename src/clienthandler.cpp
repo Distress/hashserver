@@ -6,19 +6,25 @@ ClientHandler::ClientHandler(QObject *parent) :
     QObject(parent),
     m_hash(QCryptographicHash::Md5)
 {
-    QObject::connect(&m_socket, &QTcpSocket::disconnected,
-                     this, &ClientHandler::finished);
-    QObject::connect(&m_socket, &QTcpSocket::disconnected,
-                     this, &ClientHandler::deleteLater);
-    QObject::connect(&m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
-                     this, SLOT(onSocketError(QAbstractSocket::SocketError)));
-    QObject::connect(&m_socket, &QTcpSocket::readyRead,
-                     this, &ClientHandler::onSocketReadyRead);
+    connect(&m_sessionTimer, &QTimer::timeout, this, &ClientHandler::onTimeout);
+
+    connect(&m_socket, &QTcpSocket::disconnected,
+            this, &ClientHandler::finished);
+    connect(&m_socket, &QTcpSocket::disconnected,
+            this, &ClientHandler::deleteLater);
+    connect(&m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
+            this, SLOT(onSocketError(QAbstractSocket::SocketError)));
+    connect(&m_socket, &QTcpSocket::readyRead,
+            this, &ClientHandler::onSocketReadyRead);
 }
 
 bool ClientHandler::setSocketDescriptor(qintptr socketDescriptor)
 {
-    return m_socket.setSocketDescriptor(socketDescriptor);
+    if (!m_socket.setSocketDescriptor(socketDescriptor))
+        return false;
+
+    m_sessionTimer.start(600000);
+    return true;
 }
 
 QString ClientHandler::lastErrorString()
@@ -35,6 +41,8 @@ void ClientHandler::onSocketError(QAbstractSocket::SocketError socketError)
 
 void ClientHandler::onSocketReadyRead()
 {
+    m_sessionTimer.stop();
+
     char buf[4096];
 
     qint64 numRead;
@@ -49,6 +57,8 @@ void ClientHandler::onSocketReadyRead()
             m_hash.addData(buf, numRead);
         }
     }
+
+    m_sessionTimer.start();
 }
 
 void ClientHandler::writeLine(const QByteArray& line)
@@ -57,4 +67,12 @@ void ClientHandler::writeLine(const QByteArray& line)
 
     m_socket.write(line);
     m_socket.write("\n");
+}
+
+void ClientHandler::onTimeout()
+{
+    qInfo() << tr("Timeout signal received.");
+
+    writeLine("Connection closed due to timeout");
+    m_socket.close();
 }
