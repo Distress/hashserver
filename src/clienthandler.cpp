@@ -1,7 +1,6 @@
 #include "clienthandler.h"
 
 #include <QDebug>
-#include <QThread>
 
 ClientHandler::ClientHandler(QObject *parent) :
     QObject(parent),
@@ -22,9 +21,14 @@ bool ClientHandler::setSocketDescriptor(qintptr socketDescriptor)
     return m_socket.setSocketDescriptor(socketDescriptor);
 }
 
+QString ClientHandler::lastErrorString()
+{
+    return m_socket.errorString();
+}
+
 void ClientHandler::onSocketError(QAbstractSocket::SocketError socketError)
 {
-    qInfo() << QThread::currentThreadId() << Q_FUNC_INFO << socketError;
+    qInfo() << tr("Socket error received: %1.").arg(socketError);
 
     m_hash.reset();
 }
@@ -49,7 +53,7 @@ void ClientHandler::onSocketReadyRead()
 
 void ClientHandler::writeLine(const QByteArray& line)
 {
-    qInfo() << QThread::currentThreadId() << Q_FUNC_INFO << line;
+    qInfo() << tr("Write line to socket:") << line;
 
     m_socket.write(line);
     m_socket.write("\n");

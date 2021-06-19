@@ -2,8 +2,6 @@
 
 #include <QDebug>
 
-#include <QThread>
-
 WorkerPool::WorkerPool(QObject *parent) : QObject(parent)
 {
 }
@@ -42,5 +40,7 @@ void WorkerPool::onClientDisconnected()
         int newClientCounter = --m_workers[worker];
         m_clientCounters.remove((newClientCounter + 1), worker);
         m_clientCounters.insert(newClientCounter, worker);
+    } else {
+        qCritical() << tr("Unable to cast sender.");
     }
 }

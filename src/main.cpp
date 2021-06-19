@@ -1,12 +1,56 @@
+#include <cstring>
 #include <signal.h>
 
 #include <QCoreApplication>
+
+#include <QDateTime>
+#include <QFile>
 #include <QObject>
 #include <QTimer>
 
 #include "hashserver.h"
 
-static int setup_unix_signal_handlers()
+static void myMessageOutput(QtMsgType type,
+                            const QMessageLogContext &context,
+                            const QString &msg)
+{
+    QString desc = QDateTime::currentDateTime().toString();
+
+    desc += QString(" [%1]").arg(reinterpret_cast<quint64>(QThread::currentThreadId()));
+
+    switch (type) {
+    case QtDebugMsg:
+        desc += " Debug   : ";
+        break;
+    case QtWarningMsg:
+        desc += " Warning : ";
+        break;
+    case QtCriticalMsg:
+        desc += " Critical: ";
+        break;
+    case QtFatalMsg:
+        desc += " Fatal   : ";
+        break;
+    default:
+        desc += " Info    : ";
+    }
+
+    desc += msg;
+    if (context.file)
+        desc += QString(" (%1:%2, %3)")
+                .arg(context.file).arg(context.line).arg(context.function).toUtf8();
+
+    QByteArray localMsg(desc.toUtf8());
+    fprintf(stderr, "%s\n", localMsg.constData());
+
+    QFile outFile("/var/log/hashserver.log");
+    if (outFile.open(QIODevice::WriteOnly | QIODevice::Append) ) {
+        QTextStream ts(&outFile);
+        ts << desc << endl;
+    }
+}
+
+static void setup_unix_signal_handlers()
 {
     struct sigaction hup, term;
 
@@ -16,7 +60,7 @@ static int setup_unix_signal_handlers()
     hup.sa_flags |= SA_RESTART;
 
     if (sigaction(SIGHUP, &hup, 0))
-        return 1;
+        qFatal("Couldn't set SIGHUP handler: %s.", strerror(errno));
 
     term.sa_handler = HashServer::termSignalHandler;
     sigemptyset(&term.sa_mask);
@@ -24,13 +68,12 @@ static int setup_unix_signal_handlers()
     term.sa_flags |= SA_RESTART;
 
     if (sigaction(SIGTERM, &term, 0))
-        return 2;
-
-    return 0;
+        qFatal("Couldn't set SIGTERM handler: %s.", strerror(errno));
 }
 
 int main(int argc, char *argv[])
 {
+    qInstallMessageHandler(myMessageOutput);
     qRegisterMetaType<qintptr>("qintptr");
 
     QCoreApplication a(argc, argv);
@@ -40,6 +83,7 @@ int main(int argc, char *argv[])
 
     QTimer::singleShot(0, &server, &HashServer::start);
 
-    if (setup_unix_signal_handlers() == 0)
-        return a.exec();
+    setup_unix_signal_handlers();
+
+    return a.exec();
 }

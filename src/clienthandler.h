@@ -14,6 +14,7 @@ public:
     explicit ClientHandler(QObject *parent = nullptr);
 
     bool setSocketDescriptor(qintptr socketDescriptor);
+    QString lastErrorString();
 
 signals:
     void finished();

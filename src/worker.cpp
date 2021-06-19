@@ -14,6 +14,8 @@ Worker::Worker(QObject *parent) : QObject(parent)
     connect(engine, &WorkerEngine::clientDisconnected, this, &Worker::clientDisconnected);
 
     m_workerThread.start();
+
+    qInfo() << tr("New thread started");
 }
 
 Worker::~Worker()
