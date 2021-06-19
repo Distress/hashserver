@@ -31,18 +31,26 @@ void ClientHandler::onSocketError(QAbstractSocket::SocketError socketError)
 
 void ClientHandler::onSocketReadyRead()
 {
-    char buf[1024];
-    qint64 lineLength ;
-//    while ((lineLength = socket.readLine(buf, 3)) > 0) {
-    while ((lineLength = m_socket.readLine(buf, sizeof(buf))) > 0) {
-        if (buf[lineLength - 1] == '\n') { //особый случай если 0, обработка ошибок
-            m_hash.addData(buf, lineLength - 1);
-            qDebug() << QThread::currentThreadId() << Q_FUNC_INFO << m_hash.result().toHex();
-            m_socket.write(m_hash.result().toHex());
-            m_socket.write("\n");
+    char buf[4096];
+
+    qint64 numRead;
+    while ((numRead = m_socket.readLine(buf, sizeof(buf))) > 0) {
+        if (buf[numRead - 1] == '\n') {
+            if (numRead != 1) //if '\n' is not the only character
+                m_hash.addData(buf, numRead - 1);
+
+            writeLine(m_hash.result().toHex());
             m_hash.reset();
         } else {
-            m_hash.addData(buf, lineLength);
+            m_hash.addData(buf, numRead);
         }
     }
+}
+
+void ClientHandler::writeLine(const QByteArray& line)
+{
+    qInfo() << QThread::currentThreadId() << Q_FUNC_INFO << line;
+
+    m_socket.write(line);
+    m_socket.write("\n");
 }

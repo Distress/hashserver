@@ -19,6 +19,8 @@ signals:
     void finished();
 
 private:
+    void writeLine(const QByteArray& line);
+
     QTcpSocket m_socket;
     QCryptographicHash m_hash;
 
