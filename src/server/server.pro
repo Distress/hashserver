@@ -24,16 +24,14 @@ INCLUDEPATH += \
 SOURCES += \
         main.cpp \
     hashserver.cpp \
-    workerpool.cpp \
-    workerengine.cpp \
-    worker.cpp \
     hashsocket.cpp \
-    xxhashwrapper.cpp
+    xxhashwrapper.cpp \
+    weightedthreadpool.cpp \
+    tcpserver.cpp
 
 HEADERS += \
     hashserver.h \
-    workerpool.h \
-    workerengine.h \
-    worker.h \
     hashsocket.h \
-    xxhashwrapper.h
+    xxhashwrapper.h \
+    weightedthreadpool.h \
+    tcpserver.h

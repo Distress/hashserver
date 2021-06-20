@@ -1,12 +1,12 @@
 #pragma once
 
-#include <QTcpServer>
+#include <QObject>
 
 #include <QSocketNotifier>
 
-#include "workerpool.h"
+#include "tcpserver.h"
 
-class HashServer : public QTcpServer
+class HashServer : public QObject
 {
     Q_OBJECT
 
@@ -25,11 +25,8 @@ public slots:
 signals:
     void stoped();
 
-protected:
-    void incomingConnection(qintptr socketDescriptor) override;
-
 private:
-    WorkerPool m_pool;
+    TcpServer m_server;
     static int m_sigtermFd[2];
 
     QSocketNotifier *m_snTerm;

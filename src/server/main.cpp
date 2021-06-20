@@ -1,6 +1,3 @@
-#include <cstring>
-#include <signal.h>
-
 #include <QCoreApplication>
 
 #include <QDateTime>
@@ -43,31 +40,9 @@ static void myMessageOutput(QtMsgType type,
     fprintf(stderr, "%s\n", localMsg.constData());
 }
 
-static void setup_unix_signal_handlers()
-{
-    struct sigaction hup, term;
-
-    hup.sa_handler = HashServer::termSignalHandler;
-    sigemptyset(&hup.sa_mask);
-    hup.sa_flags = 0;
-    hup.sa_flags |= SA_RESTART;
-
-    if (sigaction(SIGHUP, &hup, 0))
-        qFatal("Couldn't set SIGHUP handler: %s.", strerror(errno));
-
-    term.sa_handler = HashServer::termSignalHandler;
-    sigemptyset(&term.sa_mask);
-    term.sa_flags = 0;
-    term.sa_flags |= SA_RESTART;
-
-    if (sigaction(SIGTERM, &term, 0))
-        qFatal("Couldn't set SIGTERM handler: %s.", strerror(errno));
-}
-
 int main(int argc, char *argv[])
 {
     qInstallMessageHandler(myMessageOutput);
-    qRegisterMetaType<qintptr>("qintptr");
 
     QCoreApplication a(argc, argv);
 
@@ -75,8 +50,6 @@ int main(int argc, char *argv[])
     QObject::connect(&server, &HashServer::stoped, &a, &QCoreApplication::quit);
 
     QTimer::singleShot(0, &server, &HashServer::start);
-
-    setup_unix_signal_handlers();
 
     return a.exec();
 }
