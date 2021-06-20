@@ -4,7 +4,6 @@
 #include <QCoreApplication>
 
 #include <QDateTime>
-#include <QFile>
 #include <QObject>
 #include <QTimer>
 
@@ -42,12 +41,6 @@ static void myMessageOutput(QtMsgType type,
 
     QByteArray localMsg(desc.toUtf8());
     fprintf(stderr, "%s\n", localMsg.constData());
-
-    QFile outFile("/var/log/hashserver.log");
-    if (outFile.open(QIODevice::WriteOnly | QIODevice::Append) ) {
-        QTextStream ts(&outFile);
-        ts << desc << endl;
-    }
 }
 
 static void setup_unix_signal_handlers()
