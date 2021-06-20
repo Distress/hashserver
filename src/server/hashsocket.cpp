@@ -2,7 +2,6 @@
 
 HashSocket::HashSocket(int msec, QObject *parent) :
     QTcpSocket(parent),
-    m_hash(QCryptographicHash::Md5),
     m_timeout(msec)
 {
     connect(&m_sessionTimer, &QTimer::timeout,
@@ -30,14 +29,6 @@ HashSocket::HashSocket(int msec, QObject *parent) :
     });
 }
 
-void HashSocket::writeLine(const QByteArray& line)
-{
-    qInfo() << tr("Write line to socket:") << line;
-
-    write(line);
-    write("\n");
-}
-
 void HashSocket::onSocketReadyRead()
 {
     m_sessionTimer.stop();
@@ -48,7 +39,7 @@ void HashSocket::onSocketReadyRead()
     while ((numRead = readLine(buf, sizeof(buf))) > 0) {
         if (buf[numRead - 1] == '\n') {
             m_hash.addData(buf, numRead - 1);
-            writeLine(m_hash.result().toHex());
+            write(m_hash.result());
             m_hash.reset();
         } else {
             m_hash.addData(buf, numRead);

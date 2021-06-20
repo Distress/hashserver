@@ -29,7 +29,7 @@ void HashServer::start()
     if (!listen(QHostAddress::Any, 50000)) {
         QByteArray ba = tr("Unable to start the server: %1.")
                 .arg(errorString()).toUtf8();
-        qFatal(ba.constData());
+        qFatal("%s", ba.constData());
     }
 
     qInfo() << tr("Server started at port %1.").arg(50000);
