@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTimer>
 
-#include "hashserver.h"
+#include "hashdaemon.h"
 
 static void myMessageOutput(QtMsgType type,
                             const QMessageLogContext &context,
@@ -46,10 +46,10 @@ int main(int argc, char *argv[])
 
     QCoreApplication a(argc, argv);
 
-    HashServer server;
-    QObject::connect(&server, &HashServer::stoped, &a, &QCoreApplication::quit);
+    HashDaemon server;
+    QObject::connect(&server, &HashDaemon::stoped, &a, &QCoreApplication::quit);
 
-    QTimer::singleShot(0, &server, &HashServer::start);
+    QTimer::singleShot(0, &server, &HashDaemon::start);
 
     return a.exec();
 }

@@ -23,15 +23,15 @@ INCLUDEPATH += \
 
 SOURCES += \
         main.cpp \
-    hashserver.cpp \
     hashsocket.cpp \
     xxhashwrapper.cpp \
     weightedthreadpool.cpp \
-    tcpserver.cpp
+    hashdaemon.cpp \
+    hashserver.cpp
 
 HEADERS += \
-    hashserver.h \
     hashsocket.h \
     xxhashwrapper.h \
     weightedthreadpool.h \
-    tcpserver.h
+    hashdaemon.h \
+    hashserver.h
