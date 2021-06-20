@@ -2,20 +2,22 @@
 
 #include <QDebug>
 
+#include "hashsocket.h"
+
 WorkerEngine::WorkerEngine(QObject *parent) : QObject(parent)
 {
 }
 
 void WorkerEngine::handleSocket(qintptr socketDescriptor)
 {
-    auto handler = new ClientHandler(this);
+    auto socket = new HashSocket(60000, this);
 
-    connect(handler, &ClientHandler::finished,
+    connect(socket, &HashSocket::disconnected,
             this, &WorkerEngine::clientDisconnected);
 
-    if (!handler->setSocketDescriptor(socketDescriptor)) {
+    if (!socket->setSocketDescriptor(socketDescriptor)) {
         qCritical() << tr("Unable to set socket descriptor: %1.")
-                       .arg(handler->lastErrorString());
-        handler->deleteLater();
+                       .arg(socket->errorString());
+        socket->deleteLater();
     }
 }

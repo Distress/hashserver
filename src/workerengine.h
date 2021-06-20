@@ -1,9 +1,6 @@
-#ifndef WORKERENGINE_H
-#define WORKERENGINE_H
+#pragma once
 
 #include <QObject>
-
-#include "clienthandler.h"
 
 class WorkerEngine : public QObject
 {
@@ -18,5 +15,3 @@ public slots:
 signals:
     void clientDisconnected();
 };
-
-#endif // WORKER_H

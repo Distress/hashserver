@@ -1,5 +1,4 @@
-#ifndef WORKER_H
-#define WORKER_H
+#pragma once
 
 #include <QObject>
 
@@ -23,5 +22,3 @@ signals:
 private:
     QThread m_workerThread;
 };
-
-#endif // WORKER_H
