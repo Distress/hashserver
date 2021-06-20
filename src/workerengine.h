@@ -3,8 +3,6 @@
 
 #include <QObject>
 
-#include "clienthandler.h"
-
 class WorkerEngine : public QObject
 {
     Q_OBJECT
