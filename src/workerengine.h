@@ -1,5 +1,4 @@
-#ifndef WORKERENGINE_H
-#define WORKERENGINE_H
+#pragma once
 
 #include <QObject>
 
@@ -16,5 +15,3 @@ public slots:
 signals:
     void clientDisconnected();
 };
-
-#endif // WORKER_H

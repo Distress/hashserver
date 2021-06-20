@@ -1,5 +1,4 @@
-#ifndef HASHSERVER_H
-#define HASHSERVER_H
+#pragma once
 
 #include <QTcpServer>
 
@@ -35,5 +34,3 @@ private:
 
     QSocketNotifier *m_snTerm;
 };
-
-#endif // HASHSERVER_H

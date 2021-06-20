@@ -1,5 +1,4 @@
-#ifndef WORKERPOOL_H
-#define WORKERPOOL_H
+#pragma once
 
 #include <QObject>
 
@@ -25,5 +24,3 @@ private:
 private slots:
     void onClientDisconnected();
 };
-
-#endif // WORKERPOOL_H
