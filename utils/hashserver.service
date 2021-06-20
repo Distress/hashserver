@@ -1,0 +1,15 @@
+[Unit]
+Description=Hash TCP Server
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/hashserver/bin/server
+Restart=on-failure
+
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target
