@@ -1,0 +1,3 @@
+[submodule "external/xxhash"]
+	path = external/xxhash
+	url = git@github.com:Distress/xxhash.git

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <QTcpSocket>
-
-#include <QCryptographicHash>
 #include <QTimer>
+
+#include "xxhashwrapper.h"
 
 class HashSocket : public QTcpSocket
 {
@@ -14,11 +14,9 @@ public:
                         QObject *parent = nullptr);
 
 private:
-    QCryptographicHash m_hash;
+    XxHashWrapper m_hash;
     QTimer m_sessionTimer;
     int m_timeout;
-
-    void writeLine(const QByteArray& line);
 
 private slots:
     void onSocketReadyRead();
