@@ -47,9 +47,7 @@ void HashSocket::onSocketReadyRead()
     qint64 numRead;
     while ((numRead = readLine(buf, sizeof(buf))) > 0) {
         if (buf[numRead - 1] == '\n') {
-            if (numRead != 1) //if '\n' is not the only character
-                m_hash.addData(buf, numRead - 1);
-
+            m_hash.addData(buf, numRead - 1);
             writeLine(m_hash.result().toHex());
             m_hash.reset();
         } else {
