@@ -6,22 +6,28 @@ HashSocket::HashSocket(int msec, QObject *parent) :
     m_timeout(msec)
 {
     connect(&m_sessionTimer, &QTimer::timeout,
-            this, &HashSocket::onTimeout);
+            [this]() {
+        qInfo() << tr("Timeout signal received.");
+        write("Connection closed due to timeout\n");
+        close();
+    });
 
-    connect(this, &QAbstractSocket::connected, this,
-            &HashSocket::startTimeoutTimer);
-    connect(this, &QAbstractSocket::disconnected,
+    connect(this, &HashSocket::connected,
+            [this]() { m_sessionTimer.start(m_timeout); });
+
+    connect(this, &HashSocket::disconnected,
             this, &HashSocket::deleteLater);
 
-    connect(this, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(onSocketError(QAbstractSocket::SocketError)));
-    connect(this, &QTcpSocket::readyRead,
-            this, &HashSocket::onSocketReadyRead);
-}
 
-void HashSocket::startTimeoutTimer()
-{
-    m_sessionTimer.start(m_timeout);
+    connect(this, &HashSocket::readyRead,
+            this, &HashSocket::onSocketReadyRead);
+
+    connect(this, static_cast<void ( HashSocket::* )(
+                QAbstractSocket::SocketError )>( &QAbstractSocket::error ),
+            [this]( QAbstractSocket::SocketError ) {
+        qInfo() << tr("Socket error received: %1.").arg(errorString());
+        m_hash.reset();
+    });
 }
 
 void HashSocket::writeLine(const QByteArray& line)
@@ -30,15 +36,6 @@ void HashSocket::writeLine(const QByteArray& line)
 
     write(line);
     write("\n");
-}
-
-void HashSocket::onSocketError(QAbstractSocket::SocketError socketError)
-{
-    Q_UNUSED(socketError)
-
-    qInfo() << tr("Socket error received: %1.").arg(errorString());
-
-    m_hash.reset();
 }
 
 void HashSocket::onSocketReadyRead()
@@ -60,13 +57,5 @@ void HashSocket::onSocketReadyRead()
         }
     }
 
-    startTimeoutTimer();
-}
-
-void HashSocket::onTimeout()
-{
-    qInfo() << tr("Timeout signal received.");
-
-    writeLine("Connection closed due to timeout");
-    close();
+    m_sessionTimer.start(m_timeout);
 }

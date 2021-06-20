@@ -21,10 +21,5 @@ private:
     void writeLine(const QByteArray& line);
 
 private slots:
-    void startTimeoutTimer();
-
-    void onSocketError(QAbstractSocket::SocketError onSocketError);
     void onSocketReadyRead();
-
-    void onTimeout();
 };

@@ -12,7 +12,7 @@ void WorkerEngine::handleSocket(qintptr socketDescriptor)
 {
     auto socket = new HashSocket(60000, this);
 
-    connect(socket, &QAbstractSocket::disconnected,
+    connect(socket, &HashSocket::disconnected,
             this, &WorkerEngine::clientDisconnected);
 
     if (!socket->setSocketDescriptor(socketDescriptor)) {

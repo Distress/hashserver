@@ -8,7 +8,7 @@ Worker::Worker(QObject *parent) : QObject(parent)
 {
     auto engine = new WorkerEngine();
     engine->moveToThread(&m_workerThread);
-    connect(&m_workerThread, &QThread::finished, engine, &QObject::deleteLater);
+    connect(&m_workerThread, &QThread::finished, engine, &WorkerEngine::deleteLater);
 
     connect(this, &Worker::clientConnected, engine, &WorkerEngine::handleSocket);
     connect(engine, &WorkerEngine::clientDisconnected, this, &Worker::clientDisconnected);
