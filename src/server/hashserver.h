@@ -2,9 +2,7 @@
 
 #include <QTcpServer>
 
-#include <QSocketNotifier>
-
-#include "workerpool.h"
+#include "weightedthreadpool.h"
 
 class HashServer : public QTcpServer
 {
@@ -13,24 +11,9 @@ class HashServer : public QTcpServer
 public:
     explicit HashServer(QObject *parent = nullptr);
 
-    // Unix signal handlers.
-    static void termSignalHandler(int unused);
-
-public slots:
-    void start();
-
-    // Qt signal handlers.
-    void handleSigTerm();
-
-signals:
-    void stoped();
-
 protected:
     void incomingConnection(qintptr socketDescriptor) override;
 
 private:
-    WorkerPool m_pool;
-    static int m_sigtermFd[2];
-
-    QSocketNotifier *m_snTerm;
+    WeightedThreadPool m_pool;
 };

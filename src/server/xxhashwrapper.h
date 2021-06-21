@@ -15,5 +15,5 @@ public:
     QByteArray result() const;
 
 private:
-    std::unique_ptr<XXHash64> hash;
+    std::unique_ptr<XXHash64> m_hash;
 };
