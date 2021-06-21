@@ -1,4 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    hashserver_ut
+    hashdaemon_ut \
+    xxhashwrapper_ut \
+    weightedthreadpool_ut

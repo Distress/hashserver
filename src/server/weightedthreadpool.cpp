@@ -4,10 +4,6 @@
 
 WeightedThreadPool::WeightedThreadPool(QObject *parent) : QObject(parent)
 {
-    if (QThread::idealThreadCount() == 1) {
-        m_threads.insert(QThread::currentThread(), 0);
-        m_jobCounters.insert(0, QThread::currentThread());
-    }
 }
 
 WeightedThreadPool::~WeightedThreadPool()
@@ -52,9 +48,15 @@ void WeightedThreadPool::unregisterThreadJob(QThread *thread)
 
 QThread *WeightedThreadPool::createThread()
 {
-    auto thread = new QThread();
+    auto thread = QThread::currentThread();
+
+    if (QThread::idealThreadCount() > 1) {
+        thread = new QThread();
+        thread->start();
+    }
+
     m_threads.insert(thread, 0);
     m_jobCounters.insert(0, thread);
-    thread->start();
+
     return thread;
 }

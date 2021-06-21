@@ -4,16 +4,15 @@
 #
 #-------------------------------------------------
 
-QT       += network testlib
+QT       += testlib network
 
 QT       -= gui
 
-TARGET = hashserver_ut
+TARGET = hashdaemon_ut
 CONFIG += console
 CONFIG -= app_bundle
-CONFIG += testcase
-CONFIG += no_testcase_installs
 
+CONFIG += testcase no_testcase_installs
 
 TEMPLATE = app
 
@@ -28,6 +27,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += ../../external \
+        ../../src/server
 
 SOURCES += \
-        hashserver_ut.cpp
+        hashdaemon_ut.cpp \
+        $$files("../../src/server/*.cpp")
+SOURCES -= ../../src/server/main.cpp
+
+HEADERS += \
+        $$files("../../src/server/*.h")

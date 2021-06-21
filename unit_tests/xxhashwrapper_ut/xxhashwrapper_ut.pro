@@ -1,14 +1,23 @@
-QT -= gui
-QT += network
+#-------------------------------------------------
+#
+# Project created by QtCreator 2021-06-21T18:53:13
+#
+#-------------------------------------------------
 
-CONFIG += c++14
+QT       += testlib
+
+QT       -= gui
+
+TARGET = xxhashwrapper_ut
+CONFIG += console
 CONFIG -= app_bundle
 
-QMAKE_CXXFLAGS += -Woverloaded-virtual -Wpedantic -Wextra \
-    -Wfloat-equal -Wshadow -Wundef
+CONFIG += testcase no_testcase_installs
+
+TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
-# any feature of Qt which as been marked deprecated (the exact warnings
+# any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -18,20 +27,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-INCLUDEPATH += \
-    ../../external
+INCLUDEPATH += ../../external \
+        ../../src/server
 
 SOURCES += \
-        main.cpp \
-    hashsocket.cpp \
-    xxhashwrapper.cpp \
-    weightedthreadpool.cpp \
-    hashdaemon.cpp \
-    hashserver.cpp
+        xxhashwrapper_ut.cpp \
+        ../../src/server/xxhashwrapper.cpp
 
 HEADERS += \
-    hashsocket.h \
-    xxhashwrapper.h \
-    weightedthreadpool.h \
-    hashdaemon.h \
-    hashserver.h
+        ../../src/server/xxhashwrapper.h

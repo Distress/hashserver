@@ -3,7 +3,7 @@
 #include <QString>
 
 #include <memory>
-#include <xxhash64.h>
+#include <xxhash/xxhash64.h>
 
 class XxHashWrapper
 {
