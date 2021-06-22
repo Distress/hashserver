@@ -9,6 +9,7 @@ QT       += testlib
 QT       -= gui
 
 TARGET = weightedthreadpool_ut
+CONFIG += c++14
 CONFIG += console
 CONFIG -= app_bundle
 

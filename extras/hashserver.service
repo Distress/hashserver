@@ -5,7 +5,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/hashserver/bin/server
+ExecStart=/usr/local/hashserver/bin/hashserver
 Restart=on-failure
 
 StandardOutput=syslog

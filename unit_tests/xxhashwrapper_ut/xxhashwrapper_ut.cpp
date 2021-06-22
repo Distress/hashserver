@@ -26,7 +26,7 @@ void XxHashWrapperUT::empty_string()
 {
     XxHashWrapper hash;
 
-    QCOMPARE(hash.result(), "8ee9935d088b3fd9");
+    QCOMPARE(hash.result(), QByteArray("8ee9935d088b3fd9"));
 }
 
 void XxHashWrapperUT::reset()

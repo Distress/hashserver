@@ -9,6 +9,7 @@ QT       += testlib network
 QT       -= gui
 
 TARGET = hashdaemon_ut
+CONFIG += c++14
 CONFIG += console
 CONFIG -= app_bundle
 
