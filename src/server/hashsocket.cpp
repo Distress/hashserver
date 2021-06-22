@@ -43,8 +43,7 @@ void HashSocket::setDescriptor(qintptr socketDescriptor)
     });
 
     if (!setSocketDescriptor(socketDescriptor)) {
-        qCritical() << tr("Unable to set socket descriptor: %1.")
-                       .arg(errorString());
+        qCritical() << tr("Unable to set socket descriptor: %1.").arg(errorString());
         deleteLater();
     }
 }
@@ -60,6 +59,7 @@ void HashSocket::onSocketReadyRead()
         if (buf[numRead - 1] == '\n') {
             m_hash->addData(buf, numRead - 1);
             write(m_hash->result());
+            write("\n");
             m_hash.get()->reset();
         } else {
             m_hash->addData(buf, numRead);

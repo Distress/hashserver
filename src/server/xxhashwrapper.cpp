@@ -21,7 +21,7 @@ void XxHashWrapper::reset()
 
 QByteArray XxHashWrapper::result() const
 {
-    QString hashsum = QString::asprintf("%" PRIx64 "\n", m_hash->hash());
+    QString hashsum = QString::asprintf("%016" PRIx64, m_hash->hash());
     qInfo() << QObject::tr("Calculated hash: %1.").arg(hashsum);
 
     return hashsum.toUtf8();
