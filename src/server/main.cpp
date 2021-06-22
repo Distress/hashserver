@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 
+#include <QCommandLineParser>
 #include <QDateTime>
 #include <QObject>
 #include <QTimer>
@@ -45,6 +46,18 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(myMessageOutput);
 
     QCoreApplication a(argc, argv);
+
+    QCoreApplication::setOrganizationName("GB");
+    QCoreApplication::setApplicationName("HashServer");
+    QCoreApplication::setApplicationVersion(APP_VERSION);
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription("A simple TCP server "
+                                     "that calculates "
+                                     "the hash values of strings.");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.process(a);
 
     HashDaemon server;
     QObject::connect(&server, &HashDaemon::stoped, &a, &QCoreApplication::quit);
