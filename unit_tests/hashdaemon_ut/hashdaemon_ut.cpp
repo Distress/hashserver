@@ -28,9 +28,8 @@ void HashDaemonUT::handle_sigterm()
     QSignalSpy spy(&server, &HashDaemon::stoped);
 
     raise(SIGTERM);
-    QTest::qWait(1000);
 
-    QVERIFY(spy.count() == 1);
+    QVERIFY(spy.wait(1000));
 }
 
 void HashDaemonUT::handle_sighup()
@@ -39,9 +38,8 @@ void HashDaemonUT::handle_sighup()
     QSignalSpy spy(&server, &HashDaemon::stoped);
 
     raise(SIGHUP);
-    QTest::qWait(1000);
 
-    QVERIFY(spy.count() == 1);
+    QVERIFY(spy.wait(1000));
 }
 
 QTEST_GUILESS_MAIN(HashDaemonUT)
