@@ -30,4 +30,6 @@ private:
     static int m_sigtermFd[2];
 
     QSocketNotifier *m_snTerm;
+
+    void checkSettings();
 };
