@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+#include <QHash>
 #include <QMap>
 #include <QThread>
 
@@ -22,7 +23,7 @@ public slots:
     void unregisterThreadJob(QThread *thread);
 
 private:
-    QMap<QThread*, int> m_threads;
+    QHash<QThread*, int> m_threads;
     QMultiMap<int, QThread*> m_jobCounters;
 
     QThread *createThread();
