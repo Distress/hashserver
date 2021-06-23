@@ -1,0 +1,7 @@
+Package: hashserver
+Description: A simple TCP server that calculates the hash values of strings
+Architecture: amd64
+Priority: optional
+Section: net
+Maintainer: Georgiy Brun
+Depends: libqt5network5

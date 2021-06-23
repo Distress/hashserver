@@ -1,3 +1,5 @@
+requires(build_tests)
+
 TEMPLATE = subdirs
 
 SUBDIRS += \

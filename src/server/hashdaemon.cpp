@@ -1,6 +1,7 @@
 #include "hashdaemon.h"
 
 #include <QDebug>
+#include <QSettings>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -31,7 +32,8 @@ static void setup_unix_signal_handlers()
         qFatal("Couldn't set SIGTERM handler: %s.", strerror(errno));
 }
 
-HashDaemon::HashDaemon(QObject *parent) : QObject(parent)
+HashDaemon::HashDaemon(QObject *parent) :
+    QObject(parent)
 {
     if (::socketpair(AF_UNIX, SOCK_STREAM, 0, m_sigtermFd))
         qFatal("Couldn't create HUP and TERM socketpair.");
@@ -44,13 +46,19 @@ HashDaemon::HashDaemon(QObject *parent) : QObject(parent)
 
 void HashDaemon::start()
 {
-    if (!m_server.listen(QHostAddress::Any, 50000)) {
+    checkSettings();
+
+    QSettings settings;
+
+    int port = settings.value("port").toInt();
+
+    if (!m_server.listen(QHostAddress::Any, port)) {
         QByteArray ba = tr("Unable to start the server: %1.")
                 .arg(m_server.errorString()).toUtf8();
         qFatal("%s", ba.constData());
     }
 
-    qInfo() << tr("Server started at port %1.").arg(50000);
+    qInfo() << tr("Server started at port %1.").arg(port);
 }
 
 void HashDaemon::termSignalHandler(int)
@@ -69,4 +77,15 @@ void HashDaemon::handleSigTerm()
     emit stoped();
 
     m_snTerm->setEnabled(true);
+}
+
+void HashDaemon::checkSettings()
+{
+    QSettings settings;
+
+    if (!settings.contains("port"))
+        settings.setValue("port", 50000);
+
+    if (!settings.contains("timeout"))
+        settings.setValue("timeout", 60000);
 }

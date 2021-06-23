@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+systemctl stop hashserver
+systemctl disable hashserver
+
+exit 0

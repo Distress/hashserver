@@ -1,5 +1,7 @@
 #include "hashserver.h"
 
+#include <QSettings>
+
 #include "hashsocket.h"
 
 HashServer::HashServer(QObject *parent) : QTcpServer(parent)
@@ -9,7 +11,9 @@ HashServer::HashServer(QObject *parent) : QTcpServer(parent)
 
 void HashServer::incomingConnection(qintptr socketDescriptor)
 {
-    auto socket = new HashSocket(60000);
+    QSettings settings;
+
+    auto socket = new HashSocket(settings.value("timeout").toInt());
     auto thread = m_pool.lowLoadThread();
 
     socket->moveToThread(thread);

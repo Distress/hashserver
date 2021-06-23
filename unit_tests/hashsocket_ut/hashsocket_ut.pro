@@ -9,6 +9,7 @@ QT       += network testlib
 QT       -= gui
 
 TARGET = hashsocket_ut
+CONFIG += c++14
 CONFIG   += console
 CONFIG   -= app_bundle
 
