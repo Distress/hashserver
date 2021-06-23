@@ -8,11 +8,11 @@ WeightedThreadPool::WeightedThreadPool(QObject *parent) : QObject(parent)
 
 WeightedThreadPool::~WeightedThreadPool()
 {
-    foreach (auto thread, m_threads.keys()) {
-        if (thread != QThread::currentThread()) {
-            thread->quit();
-            thread->wait();
-            thread->deleteLater();
+    for (auto thread : m_threads) {
+        if (thread.first != QThread::currentThread()) {
+            thread.first->quit();
+            thread.first->wait();
+            thread.first->deleteLater();
         }
     }
 }
@@ -21,10 +21,10 @@ QThread* WeightedThreadPool::lowLoadThread()
 {
     if (m_jobCounters.empty()
             || (m_jobCounters.size() < (QThread::idealThreadCount() - 1)
-                && m_jobCounters.begin().key() > 0))
+                && m_jobCounters.begin()->first > 0))
         return createThread();
 
-    return m_jobCounters.begin().value();
+    return m_jobCounters.begin()->second;
 }
 
 int WeightedThreadPool::threadCount() const
@@ -35,15 +35,33 @@ int WeightedThreadPool::threadCount() const
 void WeightedThreadPool::registerThreadJob(QThread *thread)
 {
     int newJobCounter = ++m_threads[thread];
-    m_jobCounters.remove((newJobCounter - 1), thread);
-    m_jobCounters.insert(newJobCounter, thread);
+
+    auto iterPair = m_jobCounters.equal_range(newJobCounter - 1);
+
+    for (auto it = iterPair.first; it != iterPair.second; ++it) {
+        if (it->second == thread) {
+            m_jobCounters.erase(it);
+            break;
+        }
+    }
+
+    m_jobCounters.insert({newJobCounter, thread});
 }
 
 void WeightedThreadPool::unregisterThreadJob(QThread *thread)
 {
     int newJobCounter = --m_threads[thread];
-    m_jobCounters.remove((newJobCounter + 1), thread);
-    m_jobCounters.insert(newJobCounter, thread);
+
+    auto iterPair = m_jobCounters.equal_range(newJobCounter + 1);
+
+    for (auto it = iterPair.first; it != iterPair.second; ++it) {
+        if (it->second == thread) {
+            m_jobCounters.erase(it);
+            break;
+        }
+    }
+
+    m_jobCounters.insert({newJobCounter, thread});
 }
 
 QThread *WeightedThreadPool::createThread()
@@ -55,8 +73,8 @@ QThread *WeightedThreadPool::createThread()
         thread->start();
     }
 
-    m_threads.insert(thread, 0);
-    m_jobCounters.insert(0, thread);
+    m_threads.insert({thread, 0});
+    m_jobCounters.insert({0, thread});
 
     return thread;
 }

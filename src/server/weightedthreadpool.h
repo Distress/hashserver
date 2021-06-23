@@ -2,8 +2,11 @@
 
 #include <QObject>
 
-#include <QHash>
-#include <QMap>
+//#include <QHash>
+//#include <QMap>
+#include <unordered_map>
+#include <map>
+
 #include <QThread>
 
 class WeightedThreadPool : public QObject
@@ -25,8 +28,8 @@ public slots:
     void unregisterThreadJob(QThread *thread);
 
 private:
-    QHash<QThread*, int> m_threads;
-    QMultiMap<int, QThread*> m_jobCounters;
+    std::unordered_map<QThread*, int> m_threads;
+    std::multimap<int, QThread*> m_jobCounters;
 
     QThread *createThread();
 };
