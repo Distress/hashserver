@@ -68,6 +68,6 @@ void WeightedThreadPoolUT::selecting_lowest_loaded_thread()
     QVERIFY(wtp.lowLoadThread() == oneJobThread);
 }
 
-QTEST_APPLESS_MAIN(WeightedThreadPoolUT)
+QTEST_MAIN(WeightedThreadPoolUT)
 
 #include "weightedthreadpool_ut.moc"
