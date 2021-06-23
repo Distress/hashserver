@@ -12,7 +12,6 @@ WeightedThreadPool::~WeightedThreadPool()
         if (thread != QThread::currentThread()) {
             thread->quit();
             thread->wait();
-            thread->deleteLater();
         }
     }
 }
@@ -51,7 +50,7 @@ QThread *WeightedThreadPool::createThread()
     auto thread = QThread::currentThread();
 
     if (QThread::idealThreadCount() > 1) {
-        thread = new QThread();
+        thread = new QThread(this);
         thread->start();
     }
 
