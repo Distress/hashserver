@@ -13,6 +13,8 @@ class WeightedThreadPool : public QObject
 public:
     explicit WeightedThreadPool(QObject *parent = nullptr);
     ~WeightedThreadPool();
+    WeightedThreadPool(const WeightedThreadPool &) = default;
+    WeightedThreadPool &operator=(const WeightedThreadPool &) = default;
 
     QThread *lowLoadThread();
 
