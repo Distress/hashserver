@@ -14,15 +14,9 @@ convertsecs() {
 
 START=$(date +%s)
 
-while getopts ":d" opt; do
-    case $opt in
-        d)
-	    $(sudo apt-get -y install )
-	    ;;
-    esac
-done
-
 echo -e "\033[32m Building $PRO_NAME\033[0m"
+
+sudo apt-get -y install build-essential qt5-default || fail "dependency checking error"
 
 [ -d $BUILD_DIR ] && { /bin/rm -rf $BUILD_DIR || fail "removing build dir error" ;}
 
