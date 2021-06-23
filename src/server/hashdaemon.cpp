@@ -64,14 +64,16 @@ void HashDaemon::start()
 void HashDaemon::termSignalHandler(int)
 {
     char a = 1;
-    ::write(m_sigtermFd[0], &a, sizeof(a));
+    (void) !::write(m_sigtermFd[0], &a, sizeof(a));
 }
 
 void HashDaemon::handleSigTerm()
 {
     m_snTerm->setEnabled(false);
     char tmp;
-    ::read(m_sigtermFd[1], &tmp, sizeof(tmp));
+    if (!::read(m_sigtermFd[1], &tmp, sizeof(tmp))) {
+        qCritical() << tr("Unable to read from local socket: %1").arg(strerror(errno));
+    }
 
     qInfo() << tr("Server stoped.");
     emit stoped();
